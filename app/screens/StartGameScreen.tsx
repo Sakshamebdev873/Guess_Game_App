@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Alert, StyleSheet, TextInput, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native";
+import Card from "../components/Card";
 import PrimaryButton from "../components/PrimaryButton";
+import Title from "../components/Title";
+import Color from "../constants/Color";
 
 const StartGameScreen = ({ onPickNumber }: any) => {
   const [enteredNumber, setEnteredNumber] = useState("");
@@ -22,49 +25,48 @@ const StartGameScreen = ({ onPickNumber }: any) => {
     onPickNumber(chosenNumber);
   }
   return (
-    <View style={styles.inputContainer}>
-      <TextInput
-        style={styles.numberInput}
-        maxLength={2}
-        keyboardType="number-pad"
-        autoCapitalize="none"
-        value={enteredNumber}
-        onChangeText={numberInputHandler}
-        autoCorrect={false}
-      />
-      <View style={styles.btnContainer}>
-        <View style={styles.btnWrapper}>
-          <PrimaryButton onPress={confirmInputHandler}>Reset</PrimaryButton>
+    <View style={styles.rootScreen}>
+      <Title>Guess my Number</Title>
+      <Card>
+        <Text style={styles.instructionText}>Enter a Number</Text>
+        <TextInput
+          style={styles.numberInput}
+          maxLength={2}
+          keyboardType="number-pad"
+          autoCapitalize="none"
+          value={enteredNumber}
+          onChangeText={numberInputHandler}
+          autoCorrect={false}
+        />
+        <View style={styles.btnContainer}>
+          <View style={styles.btnWrapper}>
+            <PrimaryButton onPress={confirmInputHandler}>Reset</PrimaryButton>
+          </View>
+          <View style={styles.btnWrapper}>
+            <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
+          </View>
         </View>
-        <View style={styles.btnWrapper}>
-          <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
-        </View>
-      </View>
+      </Card>
     </View>
   );
 };
 const styles = StyleSheet.create({
-  inputContainer: {
-    padding: 16,
-    marginHorizontal: 24,
-    elevation: 4,
+  rootScreen: {
+    flex: 1,
     marginTop: 100,
-    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#72003b",
-    shadowColor: "black",
-    shadowOffset: { width: 8, height: 2 },
-    shadowRadius: 6,
-    borderRadius: 8,
-    shadowOpacity: 0.25,
+  },
+  instructionText: {
+    color: Color.accent500,
+    fontSize: 24,
   },
   numberInput: {
     height: 60,
     width: 50,
     fontSize: 32,
-    borderBottomColor: "#ddb52f",
+    borderBottomColor: Color.accent500,
     borderBottomWidth: 2,
-    color: "#ddb52f",
+    color: Color.accent500,
     fontWeight: "bold",
     marginVertical: 8,
     textAlign: "center",
