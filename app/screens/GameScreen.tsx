@@ -1,10 +1,13 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, StyleSheet, View } from "react-native";
 import Card from "../components/Card";
+import GuessLogItem from "../components/game/GuessLogItem";
 import NumberContainer from "../components/game/NumberContainer";
+import InstructionText from "../components/InstructionText";
 import PrimaryButton from "../components/PrimaryButton";
 import Title from "../components/Title";
-
+import Color from "../constants/Color";
 function generateRandomBetween(
   min: number,
   max: number,
@@ -19,9 +22,15 @@ function generateRandomBetween(
 }
 let minBoundary = 1;
 let maxBoundary = 100;
+
 const GameScreen = ({ userNumber, onGameOver }: any) => {
   const intialGuess = generateRandomBetween(1, 100, userNumber);
-  const [currentGuess, setCurrentGuess] = useState(intialGuess);
+  const [currentGuess, setCurrentGuess] = useState<number>(intialGuess);
+  const [guessRounds, setGuessRounds] = useState<number[]>([intialGuess]);
+  useEffect(() => {
+    minBoundary = 1;
+    maxBoundary = 100;
+  }, []);
   function nextGuessHandler(direction: string) {
     if (
       (direction === "lower" && currentGuess < userNumber) ||
@@ -32,10 +41,11 @@ const GameScreen = ({ userNumber, onGameOver }: any) => {
       ]);
       return;
     }
+
     if (direction == "lower") {
       maxBoundary = currentGuess;
     } else {
-      minBoundary = currentGuess;
+      minBoundary = currentGuess + 1;
     }
     const rndNum = generateRandomBetween(
       minBoundary,
@@ -43,10 +53,11 @@ const GameScreen = ({ userNumber, onGameOver }: any) => {
       currentGuess,
     );
     setCurrentGuess(rndNum);
+    setGuessRounds((prev) => [...prev, rndNum]);
   }
   useEffect(() => {
     if (currentGuess === userNumber) {
-      onGameOver();
+      onGameOver(guessRounds.length);
     }
   }, [currentGuess, userNumber, onGameOver]);
 
@@ -56,17 +67,34 @@ const GameScreen = ({ userNumber, onGameOver }: any) => {
         <Title>Opponent's Guess</Title>
         <NumberContainer>{currentGuess}</NumberContainer>
         <Card>
-          <Text>Higher or lower?</Text>
-          <View>
-            <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>
-              +
-            </PrimaryButton>
-            <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>
-              -
-            </PrimaryButton>
+          <InstructionText style={styles.instructionText}>
+            Higher or lower?
+          </InstructionText>
+          <View style={styles.btnContainer}>
+            <View style={styles.btnWrapper}>
+              <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>
+                <AntDesign name="plus" size={24} color="white" />
+              </PrimaryButton>
+            </View>
+            <View style={styles.btnWrapper}>
+              <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>
+                <AntDesign name="minus" size={24} color="white" />
+              </PrimaryButton>
+            </View>
           </View>
         </Card>
-        <View>{/* Log Rounds */}</View>
+        <View style={styles.listContainer}>
+          <FlatList
+            data={guessRounds}
+            renderItem={(item) => (
+              <GuessLogItem
+                roundsNumber={guessRounds.length - item.index}
+                guess={item.item}
+              />
+            )}
+            keyExtractor={(item) => item.toString()}
+          />
+        </View>
       </View>
     </>
   );
@@ -74,7 +102,30 @@ const GameScreen = ({ userNumber, onGameOver }: any) => {
 
 const styles = StyleSheet.create({
   rootscreen: {
-    padding: 40,
+    flex: 1,
+    paddingTop: 50,
+    paddingHorizontal: 24,
+  },
+  btnContainer: {
+    flexDirection: "row",
+    marginTop: 16,
+  },
+  btnWrapper: {
+    flex: 1,
+  },
+  instructionText: {
+    color: Color.accent500,
+    fontSize: 24,
+    marginBottom: 12,
+    textAlign: "center",
+  },
+  listContainer: {
+    flex: 1,
+    padding: 16,
+    maxHeight: 350,
+  },
+  listContent: {
+    paddingBottom: 40, // IMPORTANT: Adds space at the end so you can scroll past the bottom
   },
 });
 export default GameScreen;

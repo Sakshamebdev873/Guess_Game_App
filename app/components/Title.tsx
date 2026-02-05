@@ -1,17 +1,31 @@
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-const Title = ({ children }: any) => {
-  return <Text style={styles.title}>{children}</Text>;
+interface TitleProps {
+  children: React.ReactNode;
+}
+
+const Title = ({ children }: TitleProps) => {
+  return (
+    <View style={styles.titleContainer}>
+      <Text style={styles.titleText}>{children}</Text>
+    </View>
+  );
 };
+
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-    borderColor: "white",
-    borderWidth: 2,
+  titleContainer: {
     padding: 12,
+    borderWidth: 2,
+    borderColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white", // Make sure this contrasts with your background!
     textAlign: "center",
   },
 });
+
 export default Title;
