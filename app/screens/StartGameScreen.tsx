@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  useWindowDimensions,
   View,
 } from "react-native";
 
@@ -14,7 +15,8 @@ import Card from "../components/Card";
 import PrimaryButton from "../components/PrimaryButton";
 import Title from "../components/Title";
 import Color from "../constants/Color";
-
+const { height, width } = useWindowDimensions();
+const marginTopDistance = height < 380 ? 30 : 100;
 const StartGameScreen = ({ onPickNumber }: any) => {
   const [enteredNumber, setEnteredNumber] = useState("");
 
@@ -46,7 +48,7 @@ const StartGameScreen = ({ onPickNumber }: any) => {
     <ScrollView style={styles.screen}>
       <KeyboardAvoidingView
         style={styles.screen}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : "position"}
       >
         <View style={styles.rootContainer}>
           <Title>Guess my Number</Title>
@@ -86,7 +88,7 @@ const styles = StyleSheet.create({
   },
   rootContainer: {
     flex: 1,
-    marginTop: 100,
+    marginTop: marginTopDistance,
     alignItems: "center",
   },
   instructionText: {
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     flexDirection: "row",
-    marginTop: 16, // Added spacing between input and buttons
+    marginTop: 16,
   },
   btnWrapper: {
     flex: 1,

@@ -19,11 +19,13 @@ const styles = StyleSheet.create({
     borderColor: "white",
     alignItems: "center",
     justifyContent: "center",
+    maxWidth: "80%",
+    width: 300,
   },
   titleText: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "white", // Make sure this contrasts with your background!
+    color: "white",
     textAlign: "center",
   },
 });

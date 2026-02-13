@@ -1,6 +1,13 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import Card from "../components/Card";
 import GuessLogItem from "../components/game/GuessLogItem";
 import NumberContainer from "../components/game/NumberContainer";
@@ -31,6 +38,7 @@ const GameScreen = ({ userNumber, onGameOver }: any) => {
     minBoundary = 1;
     maxBoundary = 100;
   }, []);
+  const { width, height } = useWindowDimensions();
   function nextGuessHandler(direction: string) {
     if (
       (direction === "lower" && currentGuess < userNumber) ||
@@ -60,29 +68,60 @@ const GameScreen = ({ userNumber, onGameOver }: any) => {
       onGameOver(guessRounds.length);
     }
   }, [currentGuess, userNumber, onGameOver]);
+  let content = (
+    <>
+      <NumberContainer>{currentGuess}</NumberContainer>
+      <Card>
+        <InstructionText style={styles.instructionText}>
+          Higher or lower?
+        </InstructionText>
+        <View style={styles.btnContainer}>
+          <View style={styles.btnWrapper}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>
+              <AntDesign name="plus" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+          <View style={styles.btnWrapper}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>
+              <AntDesign name="minus" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+        </View>
+      </Card>
+    </>
+  );
+
+  if (width > 500) {
+    content = (
+      <>
+        <InstructionText style={styles.instructionText}>
+          Higher or lower?
+        </InstructionText>
+
+        <View style={styles.btnContainerWide}>
+          <View style={styles.btnWrapper}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>
+              <AntDesign name="plus" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+
+          <NumberContainer>{currentGuess}</NumberContainer>
+
+          <View style={styles.btnWrapper}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>
+              <AntDesign name="minus" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+        </View>
+      </>
+    );
+  }
 
   return (
     <>
       <View style={styles.rootscreen}>
         <Title>Opponent's Guess</Title>
-        <NumberContainer>{currentGuess}</NumberContainer>
-        <Card>
-          <InstructionText style={styles.instructionText}>
-            Higher or lower?
-          </InstructionText>
-          <View style={styles.btnContainer}>
-            <View style={styles.btnWrapper}>
-              <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>
-                <AntDesign name="plus" size={24} color="white" />
-              </PrimaryButton>
-            </View>
-            <View style={styles.btnWrapper}>
-              <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>
-                <AntDesign name="minus" size={24} color="white" />
-              </PrimaryButton>
-            </View>
-          </View>
-        </Card>
+        {content}
         <View style={styles.listContainer}>
           <FlatList
             data={guessRounds}
@@ -99,19 +138,20 @@ const GameScreen = ({ userNumber, onGameOver }: any) => {
     </>
   );
 };
-
+const deviceWidth = Dimensions.get("window").width;
 const styles = StyleSheet.create({
   rootscreen: {
     flex: 1,
-    paddingTop: 50,
+    paddingTop: deviceWidth > 350 ? 20 : 50,
     paddingHorizontal: 24,
+    alignItems: "center",
   },
   btnContainer: {
     flexDirection: "row",
     marginTop: 16,
   },
   btnWrapper: {
-    flex: 1,
+    flex: deviceWidth > 380 ? 1 : 0,
   },
   instructionText: {
     color: Color.accent500,
@@ -121,11 +161,15 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    padding: 16,
-    maxHeight: 350,
+    padding: 10,
+    maxHeight: deviceWidth > 350 ? 200 : 350,
   },
   listContent: {
     paddingBottom: 40, // IMPORTANT: Adds space at the end so you can scroll past the bottom
+  },
+  btnContainerWide: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 export default GameScreen;

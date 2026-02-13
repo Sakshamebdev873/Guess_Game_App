@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
   btnOuterContainer: {
     borderRadius: 28,
     margin: 4,
-
     overflow: "hidden",
   },
   btnInnerContainer: {
